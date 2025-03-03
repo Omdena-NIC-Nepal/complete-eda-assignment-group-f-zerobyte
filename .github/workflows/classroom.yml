@@ -47,7 +47,7 @@ jobs:
         echo "## Assignment Grade: ${{ env.GRADE }}/100" > grade_summary.md
 
     - name: Upload grade summary
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: grade-summary
         path: grade_summary.md
