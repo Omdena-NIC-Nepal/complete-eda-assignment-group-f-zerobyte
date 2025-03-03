@@ -10,24 +10,24 @@ class TestClimateEDA(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load the notebook
-        with open('climate_eda.ipynb', 'r', encoding='utf-8') as f:
+        with open("climate_eda.ipynb", "r", encoding="utf-8") as f:
             cls.notebook = nbformat.read(f, as_version=4)
         
         # Execute the notebook
-        ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
-        ep.preprocess(cls.notebook, {'metadata': {'path': '.'}})
+        ep = ExecutePreprocessor(timeout=600, kernel_name="python3")
+        ep.preprocess(cls.notebook, {"metadata": {"path": "."}})
         
         # Extract code and markdown cells
-        cls.code_cells = [cell for cell in cls.notebook.cells if cell['cell_type'] == 'code']
-        cls.markdown_cells = [cell for cell in cls.notebook.cells if cell['cell_type'] == 'markdown']
-        cls.all_code = '\n'.join([cell['source'] for cell in cls.code_cells])
-        cls.all_markdown = '\n'.join([cell['source'] for cell in cls.markdown_cells])
+        cls.code_cells = [cell for cell in cls.notebook.cells if cell["cell_type"] == "code"]
+        cls.markdown_cells = [cell for cell in cls.notebook.cells if cell["cell_type"] == "markdown"]
+        cls.all_code = "\n".join([cell["source"] for cell in cls.code_cells])
+        cls.all_markdown = "\n".join([cell["source"] for cell in cls.markdown_cells])
         
         # Check if data was loaded properly
         for cell in cls.code_cells:
-            if 'df = pd.read_csv' in cell['source']:
+            if "df = pd.read_csv" in cell["source"]:
                 # Get variable name of dataframe
-                match = re.search(r'(\w+)\s*=\s*pd\.read_csv', cell['source'])
+                match = re.search(r"(\w+)\s*=\s*pd\.read_csv", cell["source"])
                 if match:
                     cls.df_name = match.group(1)
                     break
@@ -40,7 +40,7 @@ class TestClimateEDA(unittest.TestCase):
             
     def test_data_loading(self):
         """Test that climate data is loaded"""
-        self.assertIn("read_csv('../data/Climate_Change_Indicators.csv')", self.all_code, "Data file not loaded correctly")
+        self.assertIn("read_csv('data/Climate_Change_Indicators.csv')", self.all_code, "Data file not loaded correctly")
         
     def test_yearly_aggregation(self):
         """Test that data is aggregated by year"""
@@ -132,6 +132,10 @@ class TestClimateEDA(unittest.TestCase):
             self.assertIn(var, self.all_code, f"Climate variable {var} not analyzed")
 
     def calculate_grade(self):
+        # correction AttributeError: 'TestClimateEDA' object has no attribute 'all_code' from internet
+        if not hasattr(self, "all_code"):
+            self.setUpClass()
+
         """Calculate the grade based on passing tests"""
         # List of all test methods
         test_methods = [method for method in dir(self) if method.startswith('test_')]
