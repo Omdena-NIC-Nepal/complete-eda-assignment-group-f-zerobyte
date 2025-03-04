@@ -35,7 +35,7 @@ jobs:
           python climate_data.py
           
           # Run tests
-          python -m unittest test_climate_eda.py
+          python -m unittest climate_data.py
           
           # Extract grade from test output
           GRADE=$(python -c "
