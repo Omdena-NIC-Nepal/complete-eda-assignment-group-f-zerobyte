@@ -29,7 +29,7 @@ jobs:
         jupyter nbconvert --to script climate_eda.ipynb --output climate_eda
 
     - name: Run the Python Script
-      run: python climate_eda.py
+      run: python climate_data.py
 
     - name: Create Grade Summary
       run: |
