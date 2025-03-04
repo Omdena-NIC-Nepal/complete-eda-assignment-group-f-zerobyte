@@ -5,6 +5,10 @@ from nbconvert.preprocessors import ExecutePreprocessor
 import re
 import pandas as pd
 import numpy as np
+import sys
+
+# Add the directory containing the test file to the Python path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 class TestClimateEDA(unittest.TestCase):
     @classmethod
@@ -31,7 +35,7 @@ class TestClimateEDA(unittest.TestCase):
                 if match:
                     cls.df_name = match.group(1)
                     break
-
+        
     def test_required_libraries(self):
         """Test that all required libraries are imported"""
         required_libs = ['pandas', 'numpy', 'matplotlib', 'seaborn']
@@ -151,12 +155,5 @@ class TestClimateEDA(unittest.TestCase):
         return round(grade)
 
 if __name__ == '__main__':
-    test_suite = unittest.TestLoader().loadTestsFromTestCase(TestClimateEDA)
-    test_runner = unittest.TextTestRunner(verbosity=2)
-    test_result = test_runner.run(test_suite)
-    
-    # Calculate and print grade
-    test_case = TestClimateEDA()
-    test_case.setUpClass()  # Ensure setUpClass is called
-    grade = test_case.calculate_grade()
-    print(f"\nFinal Grade: {grade}/100")
+    # Use unittest.main() to run the tests
+    unittest.main()
