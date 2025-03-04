@@ -100,7 +100,7 @@ class TestClimateEDA(unittest.TestCase):
             r"radviz\(",
             r"3d scatter"
         ]
-        found_multivariate_vis = any(re.search(pattern, self.all_code) for pattern in multivariate_vis_patterns)
+        found_multivariate_vis = any(re.search(pattern,self.all_code) for pattern in multivariate_vis_patterns)
         self.assertTrue(found_multivariate_vis, "No evidence of multivariate visualizations")
         
     def test_conclusions_present(self):
