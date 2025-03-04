@@ -87,6 +87,14 @@ class TestClimateEDA(unittest.TestCase):
         found_vars = any(var in self.all_code for var in climate_vars)
         self.assertTrue(found_vars, "Not all required climate variables were analyzed")
 
+    @classmethod
+    def calculate_grade(cls, test_result):
+        """Calculate the grade based on test results."""
+        total_tests = test_result.testsRun
+        failed_tests = len(test_result.failures) + len(test_result.errors)
+        passed_tests = total_tests - failed_tests
+        return (passed_tests / total_tests) * 100 if total_tests > 0 else 0
+
 if __name__ == '__main__':
     # Run all tests and capture results
     test_suite = unittest.TestLoader().loadTestsFromTestCase(TestClimateEDA)
@@ -94,9 +102,6 @@ if __name__ == '__main__':
     test_result = test_runner.run(test_suite)
 
     # Calculate the final grade
-    total_tests = test_result.testsRun
-    failed_tests = len(test_result.failures) + len(test_result.errors)
-    passed_tests = total_tests - failed_tests
-    grade = (passed_tests / total_tests) * 100 if total_tests > 0 else 0
+    grade = TestClimateEDA.calculate_grade(test_result)
 
     print(f"\nFinal Grade: {round(grade)}/100")
