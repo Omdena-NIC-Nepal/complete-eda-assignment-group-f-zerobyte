@@ -31,7 +31,7 @@ class TestClimateEDA(unittest.TestCase):
                 if match:
                     cls.df_name = match.group(1)
                     break
-        
+
     def test_required_libraries(self):
         """Test that all required libraries are imported"""
         required_libs = ['pandas', 'numpy', 'matplotlib', 'seaborn']
@@ -157,5 +157,6 @@ if __name__ == '__main__':
     
     # Calculate and print grade
     test_case = TestClimateEDA()
+    test_case.setUpClass()  # Ensure setUpClass is called
     grade = test_case.calculate_grade()
     print(f"\nFinal Grade: {grade}/100")
