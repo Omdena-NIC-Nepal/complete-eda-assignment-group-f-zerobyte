@@ -94,14 +94,3 @@ class TestClimateEDA(unittest.TestCase):
         failed_tests = len(test_result.failures) + len(test_result.errors)
         passed_tests = total_tests - failed_tests
         return (passed_tests / total_tests) * 100 if total_tests > 0 else 0
-
-if __name__ == '__main__':
-    # Run all tests and capture results
-    test_suite = unittest.TestLoader().loadTestsFromTestCase(TestClimateEDA)
-    test_runner = unittest.TextTestRunner(verbosity=2)
-    test_result = test_runner.run(test_suite)
-
-    # Calculate the final grade
-    grade = TestClimateEDA.calculate_grade(test_result)
-
-    print(f"\nFinal Grade: {round(grade)}/100")

@@ -31,20 +31,28 @@ jobs:
 
       - name: Run tests and calculate grade
         run: |
-          # Generate climate data
-          python climate_data.py
-          
-          # Run tests
-          python -m unittest climate_data.py
-          
-          # Extract grade from test output
+          # Run the tests
+          python -m unittest discover -s tests -p "test_*.py" > result.log
+
+          # Extract the test result from the log file
           GRADE=$(python -c "
           import unittest
           from climate_data import TestClimateEDA
-          test_case = TestClimateEDA()
-          print(test_case.calculate_grade())
+          import re
+
+          with open('result.log', 'r') as file:
+            result = file.read()
+
+          test_suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestClimateEDA)
+          test_runner = unittest.TextTestRunner()
+          test_result = test_runner.run(test_suite)
+
+          total_tests = test_result.testsRun
+          failed_tests = len(test_result.failures) + len(test_result.errors)
+          passed_tests = total_tests - failed_tests
+          grade = (passed_tests / total_tests) * 100 if total_tests > 0 else 0
+          print(round(grade))
           ")
-          
           echo "Grade: $GRADE/100"
           echo "GRADE=$GRADE" >> $GITHUB_ENV
 
@@ -57,3 +65,6 @@ jobs:
         with:
           name: grade-summary
           path: grade_summary.md
+
+  
+
