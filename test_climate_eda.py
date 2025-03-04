@@ -5,29 +5,35 @@ from nbconvert.preprocessors import ExecutePreprocessor
 import re
 import pandas as pd
 import numpy as np
-import sys
-
-# Add the directory containing the test file to the Python path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 class TestClimateEDA(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load the notebook
-        with open('climate_eda.ipynb', 'r', encoding='utf-8') as f:
+        notebook_path = 'climate_eda.ipynb'
+        if not os.path.exists(notebook_path):
+            raise FileNotFoundError(f"Notebook file '{notebook_path}' not found.")
+        
+        with open(notebook_path, 'r', encoding='utf-8') as f:
             cls.notebook = nbformat.read(f, as_version=4)
         
         # Execute the notebook
         ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
-        ep.preprocess(cls.notebook, {'metadata': {'path': '.'}})
+        try:
+            ep.preprocess(cls.notebook, {'metadata': {'path': '.'}})
+        except Exception as e:
+            raise RuntimeError(f"Failed to execute notebook: {e}")
         
         # Extract code and markdown cells
         cls.code_cells = [cell for cell in cls.notebook.cells if cell['cell_type'] == 'code']
         cls.markdown_cells = [cell for cell in cls.notebook.cells if cell['cell_type'] == 'markdown']
-        cls.all_code = '\n'.join([cell['source'] for cell in cls.code_cells])
-        cls.all_markdown = '\n'.join([cell['source'] for cell in cls.markdown_cells])
+        
+        # Combine all code and markdown content
+        cls.all_code = '\n'.join([cell['source'] for cell in cls.code_cells]) if cls.code_cells else ''
+        cls.all_markdown = '\n'.join([cell['source'] for cell in cls.markdown_cells]) if cls.markdown_cells else ''
         
         # Check if data was loaded properly
+        cls.df_name = None
         for cell in cls.code_cells:
             if 'df = pd.read_csv' in cell['source']:
                 # Get variable name of dataframe
@@ -155,5 +161,11 @@ class TestClimateEDA(unittest.TestCase):
         return round(grade)
 
 if __name__ == '__main__':
-    # Use unittest.main() to run the tests
-    unittest.main()
+    test_suite = unittest.TestLoader().loadTestsFromTestCase(TestClimateEDA)
+    test_runner = unittest.TextTestRunner(verbosity=2)
+    test_result = test_runner.run(test_suite)
+    
+    # Calculate and print grade
+    test_case = TestClimateEDA()
+    grade = test_case.calculate_grade()
+    print(f"\nFinal Grade: {grade}/100")
