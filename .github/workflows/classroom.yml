@@ -50,7 +50,7 @@ jobs:
 
       - name: Create grade summary
         run: |
-          echo "## Assignment Grade: ${{ env.GRADE }}/100" > grade_summary.md
+          echo "## Assignment Grade: $GRADE/100" > grade_summary.md
 
       - name: Upload grade summary
         uses: actions/upload-artifact@v4
