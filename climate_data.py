@@ -101,7 +101,7 @@ if __name__ == '__main__':
     test_runner = unittest.TextTestRunner(verbosity=2)
     test_result = test_runner.run(test_suite)
 
-    # Calculate the final grade
+    # Calculate the final grade using class method
     grade = TestClimateEDA.calculate_grade(test_result)
 
     print(f"\nFinal Grade: {round(grade)}/100")
