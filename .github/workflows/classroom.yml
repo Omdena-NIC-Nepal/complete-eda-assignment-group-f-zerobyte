@@ -31,8 +31,14 @@ jobs:
 
       - name: Run tests and calculate grade
         run: |
-          # Run the tests
-          python -m unittest discover -s tests -p "test_*.py" > result.log
+          # Ensure the tests directory exists (adjust the path if necessary)
+          if [ -d "tests" ]; then
+            # Run the tests with unittest discover
+            python -m unittest discover tests -p "test_*.py" > result.log
+          else
+            echo "Tests directory not found"
+            exit 1
+          fi
 
           # Extract the test result from the log file
           GRADE=$(python -c "
@@ -55,16 +61,3 @@ jobs:
           ")
           echo "Grade: $GRADE/100"
           echo "GRADE=$GRADE" >> $GITHUB_ENV
-
-      - name: Create grade summary
-        run: |
-          echo "## Assignment Grade: $GRADE/100" > grade_summary.md
-
-      - name: Upload grade summary
-        uses: actions/upload-artifact@v4
-        with:
-          name: grade-summary
-          path: grade_summary.md
-
-  
-
