@@ -40,7 +40,7 @@ jobs:
           # Extract grade from test output
           GRADE=$(python -c "
           import unittest
-          from test_climate_eda import TestClimateEDA
+          from climate_data import TestClimateEDA
           test_case = TestClimateEDA()
           print(test_case.calculate_grade())
           ")
