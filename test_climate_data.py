@@ -7,30 +7,31 @@ import pandas as pd
 import numpy as np
 
 class TestClimateEDA(unittest.TestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         # Load the notebook
         with open('climate_eda.ipynb', 'r', encoding='utf-8') as f:
-            self.notebook = nbformat.read(f, as_version=4)
+            cls.notebook = nbformat.read(f, as_version=4)
         
         # Execute the notebook
         ep = ExecutePreprocessor(timeout=600, kernel_name='python3')
-        ep.preprocess(self.notebook, {'metadata': {'path': '.'}})
+        ep.preprocess(cls.notebook, {'metadata': {'path': '.'}})
         
         # Extract code and markdown cells
-        self.code_cells = [cell for cell in self.notebook.cells if cell['cell_type'] == 'code']
-        self.markdown_cells = [cell for cell in self.notebook.cells if cell['cell_type'] == 'markdown']
-        self.all_code = '\n'.join([cell['source'] for cell in self.code_cells])
-        self.all_markdown = '\n'.join([cell['source'] for cell in self.markdown_cells])
+        cls.code_cells = [cell for cell in cls.notebook.cells if cell['cell_type'] == 'code']
+        cls.markdown_cells = [cell for cell in cls.notebook.cells if cell['cell_type'] == 'markdown']
+        cls.all_code = '\n'.join([cell['source'] for cell in cls.code_cells])
+        cls.all_markdown = '\n'.join([cell['source'] for cell in cls.markdown_cells])
         
         # Check if data was loaded properly
-        for cell in self.code_cells:
+        for cell in cls.code_cells:
             if 'df = pd.read_csv' in cell['source']:
                 # Get variable name of dataframe
                 match = re.search(r'(\w+)\s*=\s*pd\.read_csv', cell['source'])
                 if match:
-                    self.df_name = match.group(1)
+                    cls.df_name = match.group(1)
                     break
-    
+        
     def test_required_libraries(self):
         """Test that all required libraries are imported"""
         required_libs = ['pandas', 'numpy', 'matplotlib', 'seaborn']
@@ -156,6 +157,5 @@ if __name__ == '__main__':
     
     # Calculate and print grade
     test_case = TestClimateEDA()
-    test_case.setUp()  # Ensure setUp is called to initialize attributes
     grade = test_case.calculate_grade()
     print(f"\nFinal Grade: {grade}/100")
